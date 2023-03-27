@@ -22,3 +22,28 @@ group_animation <- function(iter) {
     labs(title = paste("Fold", iter), x = "Feature 1", y = "Feature 2")
   return(p)
 }
+
+model_animation <- function(iter) {
+  train <- Sonar[folds != iter,]
+  test <- Sonar[folds == iter,]
+  res <- fit_model(train, test)
+  df <- data.frame(x = Sonar$V1, y = Sonar$V2, pred = res$pred, obs = res$obs)
+  p <- ggplot(df, aes(x, y, color = pred, shape = obs)) +
+    geom_point(size = 3) +
+    scale_color_manual(values = c("#FF0000", "#0000FF")) +
+    scale_shape_manual(values = c(24, 21)) +
+    labs(title = paste("Fold", iter), x = "Feature 1", y = "Feature 2")
+  return(p)
+}
+
+cv_animation <- animint(
+  data = Sonar,
+  ggplot = list(
+    group_animation(1) + transition_states(fold),
+    model_animation(1) + transition_states(fold),
+    group_animation(2) + transition_states(fold),
+    model_animation(2) + transition_states(fold),
+    group_animation(3) + transition_states(fold),
+    model_animation(3) + transition_states(fold),
+    group_animation(4) + transition_states(fold)
+  )
