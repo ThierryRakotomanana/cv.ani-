@@ -13,3 +13,12 @@ fit_model <- function(train, test) {
   pred <- ifelse(prob > 0.5, "R", "M")
   return(list(pred = pred, obs = test$Class))
 }
+
+group_animation <- function(iter) {
+  df <- data.frame(x = Sonar$V1, y = Sonar$V2, fold = as.factor(folds))
+  df <- df[df$fold %in% 1:k,]
+  p <- ggplot(df, aes(x, y, color = fold)) +
+    geom_point() +
+    labs(title = paste("Fold", iter), x = "Feature 1", y = "Feature 2")
+  return(p)
+}
